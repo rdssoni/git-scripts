@@ -1,0 +1,16 @@
+#!/bin/sh
+# Usage: git-log-diff <since>..<until>
+#
+# All commits on master, ever:
+# git-log-diff master
+#
+# All commits on master since the 0.9.0 tag:
+# git-log-diff 0.9.0..master
+
+git log "${1:-`git branch | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`}" |
+  grep Author: |
+  sed 's/Author: \(.*\) <.*/\1/' |
+  sort |
+  uniq -c |
+  sort -rn |
+  sed 's/ *\([0-9]\{1,\}\) \(.*\)/\2 (\1)/'
